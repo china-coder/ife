@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+
+    <style type="text/css">
+        *{
+            margin: 0px;
+            padding: 0px;
+        }
+        html{
+            width: 100%;
+            height: 100%;
+        }
+        .container{
+            max-width: 720px;
+            height: 500px;
+            margin: 0 auto;
+            background-color: #ada390;
+            border-radius: 10px;
+        }
+        .row{
+            height: 100px;
+        }
+        .element{
+            width: 19%;
+            height: 100px;
+            margin: 12px 21px;
+            float: left;
+            background-color: #c2b4a4;
+            line-height: 100px;
+            text-align: center;
+            font-size: 48px;
+            font-weight: bold;
+        }
+        .nun2{
+            background-color: #eaded2;
+            color: #6f665d;
+        }
+        .num4{
+            background-color: #e7dbbd;
+            color: #6f665d;
+        }
+        .num8{
+            background-color: #efa568;
+            color: #fef4e5;
+        }
+        .num16{
+            background-color: #f38653;
+            color: #fef4e5;
+        }
+        .num32{
+            background-color: #f36b4f;
+            color: #fef4e5;
+        }
+        .num64{
+            background-color: #f44b2f;
+            color: #fef4e5;
+        }
+
+
+        /*cover*/
+        .cover{
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            left: 25%;
+            top: 0;
+            max-width: 720px;
+            margin: 0 auto;
+            background-color: #b7ae9b;
+            opacity: 0.3;
+            text-align: center;
+            display: none;
+        }
+        .finish{
+            display: block;
+            margin: 0 auto;
+            padding: 120px 0px;
+            font-size: 48px;
+        }
+        .score{
+            color: white;
+        }
+        .submit{
+            width: 68px;
+            height: 30px;
+            border-radius: 5px;
+            border: none;
+            background-color: #6f665d;
+            color: white;
+        }
+        .restart{
+            width: 150px;
+            height: 30px;
+            border-radius: 5px;
+            border: none;
+            background-color: #6f665d;
+            color: white;
+            display: block;
+            margin: 0 auto;
+            margin-top: 30px;
+
+        }
+    </style>
+    <script type="text/javascript">
+        /**
+         * 2048游戏
+         * 实现思路
+         * 1.准备界面
+         * 2.监控键盘上下左右事件
+         * 3.判断左右是否相等，相等相乘
+         * 4.结束应用
+         */
+        document.onkeydown = start;
+        function start() {
+          //  console.log(event.keyCode);
+            //左
+            if (event.keyCode == 37) {
+                var result=checkComplete();
+                console.log(result);
+                if(result==0){
+                    showResult('no');
+                }else if(result==1){
+                    addElement()
+                }else if(result==2){
+                    showResult('ok');
+                }
+
+            }
+            //上
+            if (event.keyCode == 38) {
+                var result=checkComplete();
+
+                if(result==0){
+                    showResult('no');
+                }else if(result==1){
+                    addElement()
+                }else if(result==2){
+                    showResult('ok');
+                }
+            }
+            //左
+            if (event.keyCode == 39){
+                var result=checkComplete();
+
+                if(result==0){
+                    showResult('no');
+                }else if(result==1){
+                    addElement()
+                }else if(result==2){
+                    showResult('ok');
+                }
+            }
+            //下
+            if (event.keyCode == 40){
+                var result=checkComplete();
+                if(result==0){
+                    showResult('no');
+                }else if(result==1){
+                    addElement()
+                }else if(result==2){
+                    showResult('ok');
+                }
+            }
+        }
+
+        function showResult(result){
+            if(result=='ok'){
+                document.getElementById("score").innerHTML="恭喜你赢了";
+            }
+            if(result=='no'){
+                document.getElementById("score").innerHTML="本次叠加到最高的数字："+getScore();
+            }
+        }
+
+        function getScore(){
+            var allElemnt=getAllElement();
+            var score=allElemnt[0].innerHTML;
+            for(var i=1;i<allElemnt.length;i++){
+                if(score<allElemnt[i].innerHTML){
+                    score=allElemnt[i].innerHTML;
+                }
+            }
+            return score;
+        }
+        function addElement(){
+            var allElemnt=getAllElement();
+            index=rand.get(0,15);
+            num=rand.get(2,4);
+            if(num==3){
+                num=num+1;
+            }
+            if(allElemnt[index].innerHTML==""){
+                allElemnt[index].innerHTML=num;
+                addClass(allElemnt[index],('num'+num));
+            }else{
+                //回调
+                addElement();
+            }
+        }
+        /**
+         * 判断是否结束
+         * @returns {number}
+         */
+        function checkComplete(){
+          var allElemnt=getAllElement();
+            for(var i=0;i<allElemnt.length;i++){
+                console.log(allElemnt[i].innerHTML);
+                if(allElemnt[i].innerHTML=="2048"){
+                    //胜利
+                    return 2;
+                }
+                if(allElemnt[i]!="0"){
+                    return 1;
+                }
+            }
+            return 0;
+        }
+
+        function getAllElement(){
+            return document.getElementsByClassName("element");
+        }
+
+        var rand = {};
+        rand.get = function (begin,end){
+            return Math.floor(Math.random()*(end-begin))+begin;
+        }
+
+        function hasClass(obj, cls) {
+            return obj.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
+        }
+
+        function addClass(obj, cls) {
+            if (!this.hasClass(obj, cls)) obj.className += " " + cls;
+        }
+
+        function removeClass(obj, cls) {
+            if (hasClass(obj, cls)) {
+                var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+                obj.className = obj.className.replace(reg, ' ');
+            }
+        }
+
+    </script>
+</head>
+<body>
+<div class="cover">
+    <span  class="finish">游戏结束</span>
+    <span id="score" class="score">本次叠加到最高的数字：</span><button class="submit">提交</button>
+    <button class="restart">重试</button>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="element nun2">2</div>
+        <div class="element"></div>
+        <div class="element"></div>
+        <div class="element"></div>
+    </div>
+    <div class="row">
+        <div class="element"></div>
+        <div class="element"></div>
+        <div class="element"></div>
+        <div class="element"></div>
+    </div>
+    <div class="row">
+        <div class="element"></div>
+        <div class="element"></div>
+        <div class="element"></div>
+        <div class="element"></div>
+    </div>
+    <div class="row">
+        <div class="element"></div>
+        <div class="element"></div>
+        <div class="element"></div>
+        <div class="element"></div>
+    </div>
+</div>
+
+
+</body>
+</html>
